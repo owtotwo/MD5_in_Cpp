@@ -10,7 +10,7 @@ Just use `md5.h` for your project and call the function in namespace MD5.
 ```
 #include "md5.h"
 
-MD5::md5("abc"); // "900150983cd24fb0d6963f7d28e17f72"
+std::cout << MD5::md5("abc"); // "900150983cd24fb0d6963f7d28e17f72"
 
 ```
 

@@ -16,10 +16,10 @@ MD5::md5("abc"); // "900150983cd24fb0d6963f7d28e17f72"
 
 Or if you want to build an executable file for md5 encryption, you could:  
 
-	`prompt> g++ main.cpp`
+	prompt> g++ main.cpp
 or use other compiler like clang :
 
-	`prompt> clang++ main.cpp`
+	prompt> clang++ main.cpp
 Add -std=c++11 flag whatever you want.
 
 

@@ -17,40 +17,29 @@
 #include <sstream> // for ostringstream, istringstream
 #include <cstring> // for memcpy, memset
 #include <string> // for string
-
-#if __cplusplus >= 201103L
-	#include <cstdint> // for uint32_t, uint64_t
-#else
-	#include <stdint.h>
-#endif
-
-namespace MD5 {
+#include <stdint.h> // for uint32_t, uint64_t
 
 
+
+class MD5 {
+
+public:	
 /* ======================  API  ====================== */
 
-	std::string md5(std::istream& is);
-	std::string md5_file(const std::string& filename);
-	std::string md5(const std::string& str);
+	static inline std::string md5(std::istream& is);
+	static inline std::string md5_file(const std::string& filename);
+	static inline std::string md5(const std::string& str);
 
 /* =================================================== */
 
-
-
+private:
 // ---------------------------- Implementation Detials -------------------------------
 
 // keep the process state for each update
 struct MD5state {
-
-#if __cplusplus >= 201103L
-	uint32_t state[4] = { 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476 };
-	uint64_t bit_count = 0; // valid number of bits of buffer chunk
-#else
 	uint32_t state[4];
-	uint64_t bit_count;
-#endif
+	uint64_t bit_count; // valid number of bits of buffer chunk
 	unsigned char buffer[64]; // buffer chunk
-
 };
 
 
@@ -125,7 +114,7 @@ static void md5_chunk_deal(uint32_t state[4], unsigned char chunk[64]) {
 }
 
 
-void md5_update(MD5state& context, unsigned char *input, unsigned int input_size) {
+static void md5_update(MD5state& context, unsigned char *input, unsigned int input_size) {
 	// input_size is in bytes.
 
 	unsigned int buffer_index = (context.bit_count / 8) % 64;
@@ -155,7 +144,7 @@ void md5_update(MD5state& context, unsigned char *input, unsigned int input_size
 }
 
 
-void md5_end_deal(unsigned char digest[16], MD5state& context) {
+static void md5_end_deal(unsigned char digest[16], MD5state& context) {
 
 	static unsigned char padding_buffer[64] = {0x80, 0x00};
 
@@ -178,11 +167,12 @@ void md5_end_deal(unsigned char digest[16], MD5state& context) {
 	context = MD5state(); // clean-up for safety
 }
 
+}; // class MD5
 
 
 // ========================= API Implementation ===============================
 
-std::string md5(std::istream& is) {
+inline std::string MD5::md5(std::istream& is) {
 	if (!is) throw "Stream Error";
 
 	is.seekg(0, is.end);
@@ -195,11 +185,7 @@ std::string md5(std::istream& is) {
 
 	if (!is) throw "Fail to read all the content from stream";
 
-#if __cplusplus >= 201103L
-	MD5state tmp;
-#else
 	MD5state tmp = {{0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476}, 0, {0}};
-#endif
 	
 	md5_update(tmp, buffer, length);
 
@@ -216,7 +202,7 @@ std::string md5(std::istream& is) {
 	return ss.str();
 }
 
-std::string md5_file(const std::string& filename) {
+inline std::string MD5::md5_file(const std::string& filename) {
 	std::ifstream fin(filename.c_str(), std::ifstream::binary);
 	if (!fin) throw "File Error";
 	std::string result = md5(fin);
@@ -224,12 +210,11 @@ std::string md5_file(const std::string& filename) {
 	return result;
 }
 
-std::string md5(const std::string& str) {
+inline std::string MD5::md5(const std::string& str) {
 	std::istringstream is(str);
 	if (!is) throw "String Error";
 	return md5(is);
 }
 
-} // namespace MD5
 
 #endif // __OWTOTWO_MD5_H

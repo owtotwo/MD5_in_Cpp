@@ -1,8 +1,8 @@
 # **MD5_in_Cpp** #
 A MD5-encryption library implemented in C++.  
-__*Copyright (c) 2016 sysu_AT < owtotwo@163.com >*__
+__*Copyright (c) 2016 sysu_AT < owtotwo@163.com >*__  
 
----
+
 ## How to Use ##
 
 Just use `md5.h` for your project and call the function in namespace MD5.  

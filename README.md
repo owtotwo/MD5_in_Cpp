@@ -24,4 +24,5 @@ Add -std=c++11 flag whatever you want.
 
 
 ## License ##
-* GNU Lesser General Public License [LGPL](LICENSE)
+* GNU Lesser General Public License ([LGPL](LICENSE))  
+  http://www.gnu.org/licenses/lgpl-3.0.en.html

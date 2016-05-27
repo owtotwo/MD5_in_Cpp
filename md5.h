@@ -6,6 +6,7 @@
  * [ http://www.gnu.org/licenses/lgpl-3.0.en.html ] for License Text
  * [ https://en.wikipedia.org/wiki/MD5 ] for Algorithm Detials
  *
+ * Note : make sure that use -std=c++11 compilation flag
  */
 
 #include <iomanip> // for setw, setfill
@@ -22,12 +23,20 @@
 
 namespace MD5 {
 
-std::string md5(std::istream& is);
-std::string md5_file(const std::string& filename);
-std::string md5(const std::string& str);
+
+/* ======================  API  ====================== */
+
+	std::string md5(std::istream& is);
+	std::string md5_file(const std::string& filename);
+	std::string md5(const std::string& str);
+
+/* =================================================== */
+
+
+
+// ---------------------------- Implementation Detials -------------------------------
 
 // keep the process state for each update
-
 struct MD5state {
 
 #if __cplusplus >= 201103L
@@ -168,7 +177,7 @@ void md5_end_deal(unsigned char digest[16], MD5state& context) {
 
 
 
-// ================================ API =======================================
+// ========================= API Implementation ===============================
 
 std::string md5(std::istream& is) {
 	if (!is) throw "Stream Error";

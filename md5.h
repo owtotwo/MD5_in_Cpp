@@ -9,6 +9,9 @@
  * Note : make sure that use -std=c++11 compilation flag
  */
 
+#ifndef __OWTOTWO_MD5_H
+#define __OWTOTWO_MD5_H
+
 #include <iomanip> // for setw, setfill
 #include <fstream> // for ifstream
 #include <sstream> // for ostringstream, istringstream
@@ -228,3 +231,5 @@ std::string md5(const std::string& str) {
 }
 
 } // namespace MD5
+
+#endif // __OWTOTWO_MD5_H

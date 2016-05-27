@@ -21,3 +21,7 @@ or use other compiler like clang :
 
 	`prompt> clang++ main.cpp`
 Add -std=c++11 flag whatever you want.
+
+
+## License ##
+* GNU Lesser General Public License [LGPL](LICENSE)

@@ -44,7 +44,7 @@ struct MD5state {
 
 
 template <typename T> static inline T left_rotate(T x, T n) { 
-	return (x << n) | (x >> (8 * sizeof(T) - n)); 
+	return (x << n) | ((x >> (8 * sizeof(T) - n)) & ((1 << n) - 1)); 
 }
 
 // md5 transform for each 512-bit chunk of message

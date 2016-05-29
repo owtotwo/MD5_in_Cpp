@@ -128,15 +128,16 @@ static void md5_update(MD5state& context, unsigned char *input, unsigned int inp
 	unsigned int index = 0;
 
 	if (input_size >= padding_size) {
-	// make up the buffer to 64 bytes
-	memcpy(&context.buffer[buffer_index], input, padding_size);
-	// run it
-	md5_chunk_deal(context.state, context.buffer);
-	// reset to begin
-	buffer_index = 0; 
-
-	for (index = padding_size; index + 63 < input_size; index += 64)
-		md5_chunk_deal(context.state, &input[index]);
+		// make up the buffer to 64 bytes
+		memcpy(&context.buffer[buffer_index], input, padding_size);
+		// run it
+		md5_chunk_deal(context.state, context.buffer);
+		// reset to begin
+		buffer_index = 0; 
+	
+		for (index = padding_size; index + 63 < input_size; index += 64) {
+			md5_chunk_deal(context.state, &input[index]);
+		}
 	}
 
 	/* Add the remaining part of input to Buffer */

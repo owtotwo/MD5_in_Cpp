@@ -9,8 +9,8 @@
  * Note : make sure that use -std=c++11 compilation flag
  */
 
-#ifndef __OWTOTWO_MD5_H
-#define __OWTOTWO_MD5_H
+#ifndef OWTOTWO_MD5_H
+#define OWTOTWO_MD5_H
 
 #include <iomanip> // for setw, setfill
 #include <fstream> // for ifstream
@@ -20,8 +20,10 @@
 #include <stdint.h> // for uint32_t, uint64_t
 
 
-
 class MD5 {
+
+	// memory footprint -- 1Mb by default (1^1024^1024 bytes)
+	static const size_t LOAD_VOLUME_EACH_TIME = (1 << 20);
 
 public:	
 /* ======================  API  ====================== */
@@ -114,11 +116,11 @@ static void md5_chunk_deal(uint32_t state[4], unsigned char chunk[64]) {
 }
 
 
-static void md5_update(MD5state& context, unsigned char *input, unsigned int input_size) {
+static void md5_update(MD5state& context, unsigned char *input, uint64_t input_size) {
 	// input_size is in bytes.
 
 	unsigned int buffer_index = (context.bit_count / 8) % 64;
-	context.bit_count += (uint64_t)input_size * 8;
+	context.bit_count += input_size * 8;
 
 
 	unsigned int padding_size = 64 - buffer_index;
@@ -173,24 +175,32 @@ static void md5_end_deal(unsigned char digest[16], MD5state& context) {
 
 // ========================= API Implementation ===============================
 
+
 inline std::string MD5::md5(std::istream& is) {
+	
 	if (!is) throw "Stream Error";
 
 	is.seekg(0, is.end);
-	int length = is.tellg();
+	size_t length = static_cast<size_t>(is.tellg());
 	is.seekg(0, is.beg);
-	
-	unsigned char * buffer = new unsigned char [length];
-
-	is.read((char*)buffer, length);
-
-	if (!is) throw "Fail to read all the content from stream";
 
 	MD5state tmp = {{0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476}, 0, {0}};
 	
-	md5_update(tmp, buffer, length);
-
 	unsigned char result[16];
+	unsigned char buffer[LOAD_VOLUME_EACH_TIME];
+
+	const size_t block_number = length / sizeof(buffer);
+	const size_t block_extra = length % sizeof(buffer);
+
+	for (size_t i = 0; i < block_number; i++) {
+		is.read(reinterpret_cast<char*>(buffer), sizeof(buffer));
+		md5_update(tmp, buffer, sizeof(buffer));
+	}
+	
+	is.read(reinterpret_cast<char*>(buffer), 
+		static_cast<std::streamsize>(block_extra));
+	md5_update(tmp, buffer, block_extra);
+
 	md5_end_deal(result, tmp);
 
 	std::ostringstream ss;
@@ -199,13 +209,14 @@ inline std::string MD5::md5(std::istream& is) {
 		ss << std::hex << std::setw(2) << std::setfill('0') << int(result[i]);
 	}
 
-	delete[] buffer;
 	return ss.str();
 }
 
 inline std::string MD5::md5_file(const std::string& filename) {
+	
 	std::ifstream fin(filename.c_str(), std::ifstream::binary);
 	if (!fin) throw "File Error";
+	
 	std::string result = md5(fin);
 	fin.close();
 	return result;
@@ -218,4 +229,4 @@ inline std::string MD5::md5(const std::string& str) {
 }
 
 
-#endif // __OWTOTWO_MD5_H
+#endif // OWTOTWO_MD5_H

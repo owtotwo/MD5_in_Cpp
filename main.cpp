@@ -1,5 +1,7 @@
 // main.cpp
 // Create an executable file for md5 encryption.
+// Recommend that use -O2 flag in compilation.
+// i.e. : g++ -O2 main.cpp -o md5
 
 #include <iostream>
 #include "md5.h"
